@@ -151,6 +151,6 @@ module.exports = function(grunt) {
   ]);
 //suppose to watch out for jshint fails and abort grunt build process. 
 //most likely ned to build an if condition to check if jsHint fails then run the bottom code. 
-  grunt.fail.fatal("Most likely jshint failed to load up"); 
+  // grunt.fail.fatal("Most likely jshint failed to load up"); 
 
 };
