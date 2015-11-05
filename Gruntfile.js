@@ -96,6 +96,7 @@ module.exports = function(grunt) {
 
     shell: {
       prodServer: {
+        
       }
     },
   });
@@ -135,7 +136,9 @@ module.exports = function(grunt) {
     'mochaTest'
   ]);
 
+  //xTODO 
   grunt.registerTask('build', [
+
   ]);
 
   grunt.registerTask('upload', function(n) {
@@ -148,6 +151,7 @@ module.exports = function(grunt) {
 
   grunt.registerTask('deploy', [
       // add your production server task here
+
   ]);
 //suppose to watch out for jshint fails and abort grunt build process. 
 //most likely ned to build an if condition to check if jsHint fails then run the bottom code. 
