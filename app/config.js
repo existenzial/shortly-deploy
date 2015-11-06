@@ -1,7 +1,8 @@
 var path = require('path');
 var mongoose = require('mongoose');
 
-mongoose.connect('mongodb://localhost/shortlyjcc');
+var uri = 'mongodb://localhost/shortlyjcc' || process.env.MONGOLAB_URI;
+mongoose.connect(uri);
 
 
 var db = mongoose.connection;
