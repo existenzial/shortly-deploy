@@ -4,18 +4,11 @@ module.exports = function(grunt) {
   grunt.initConfig({
     pkg: grunt.file.readJSON('package.json'),
     concat: {
+      options: {
+        separator: ';'// To separate by ;
+      },
       dist: {
-          src: [
-              'server.js',
-              'server-config.js',
-              'app/**/*.js', // All JS in the libs folder
-              'public/**/*.js',
-              'lib/*.js',
-              'views/*.ejs'
-
-              // 'someDir/global.js',  // This specific file
-
-          ],
+          src: ['public/client/**/*.js'],
           dest: 'js/build/production.js',
       }
     },
@@ -35,46 +28,47 @@ module.exports = function(grunt) {
       }
     },
 
-    uglify: {
-      build: {
-          src: 'js/build/production.js',
-          dest: 'js/build/production.min.js'
-      }
-    //not sure if necessary (original code)
-      // files: [
-        
-
-
-        
-      // ],
-      // options: {
-
-      // }
+    uglify: { 
+     options: {
+       banner: '/*! <%= pkg.name %> <%= grunt.template.today("dd-mm-yyyy") %> */\n'
+     },
+     dist: {
+       files: {
+         'public/dist/<%= pkg.name %>.min.js': ['<%= concat.dist.dest %>']
+       }
+     }
     },
 
     jshint: {
       files: [
-        // Add filespec list here
-        '/**/*.js'
+       'Gruntfile.js',
+       'app/**/*.js',
+       'public/**/*.js',
+       'lib/**/*.js',
+       './*.js',
+       'spec/**/*.js'
       ],
       options: {
-        force: 'true',
-        jshintrc: '.jshintrc',
-        ignores: [
-          'public/lib/**/*.js',
-          'public/dist/**/*.js',
-          'node_modules/**/*.js',
-          'test/**/*.js'
-        ]
-      }
+       force: 'true',
+       jshintrc: '.jshintrc',
+       ignores: [
+         'public/lib/**/*.js',
+         'public/dist/**/*.js'
+       ]
+     }
     },
 
     cssmin: {
         // Add filespec list here
-      css:{
-        src: 'public/style.css',
-        dest: 'views/concat.min.css'
-       }
+        options: {
+          keepSpecialComments: 0
+          },
+         dist: {
+           files: {
+             'public/dist/style.min.css': 'public/style.css'
+           }
+         }
+
     },
 
     watch: {
@@ -96,7 +90,11 @@ module.exports = function(grunt) {
 
     shell: {
       prodServer: {
-        
+      command: 'git push azure master',
+       options: {
+         stdout: true,
+         stderr: true,
+         failOnError: true   
       }
     },
   });
@@ -133,16 +131,21 @@ module.exports = function(grunt) {
   ////////////////////////////////////////////////////
 
   grunt.registerTask('test', [
+    'jshint',
     'mochaTest'
   ]);
 
   //xTODO 
   grunt.registerTask('build', [
-
+    'concat',
+    'uglify',
+    'cssmin'
   ]);
 
   grunt.registerTask('upload', function(n) {
     if(grunt.option('prod')) {
+       grunt.task.run([ 'shell:prodServer' ]);
+
       // add your production server task here
     } else {
       grunt.task.run([ 'server-dev' ]);
@@ -151,7 +154,9 @@ module.exports = function(grunt) {
 
   grunt.registerTask('deploy', [
       // add your production server task here
-
+      'test',
+      'build',
+      'upload'
   ]);
 //suppose to watch out for jshint fails and abort grunt build process. 
 //most likely ned to build an if condition to check if jsHint fails then run the bottom code. 

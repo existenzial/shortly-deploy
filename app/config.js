@@ -1,3 +1,17 @@
+var path = require('path');
+var mongoose = require('mongoose');
+
+mongoose.connect('mongodb://localhost/shortlyjcc');
+
+
+var db = mongoose.connection;
+db.on('error', console.error.bind(console, 'connection error:'));
+db.once('open', function () {
+  console.log('we connected')
+});
+
+
+module.exports = db;
 //OLD code
 // var Bookshelf = require('bookshelf');
 
@@ -50,18 +64,3 @@
 
 //refactor how you get the username & password info..since mongoose uses diff methods
 //once build models...find out how to deploy mongodb to azure
-
-var path = require('path');
-var mongoose = require('mongoose');
-
-mongoose.connect('mongodb://localhost/test');
-
-
-var db = mongoose.connection;
-db.on('error', console.error.bind(console, 'connection error:'));
-db.once('open', function (callback) {
-  console.log('we connected')
-});
-
-
-module.exports = db;
